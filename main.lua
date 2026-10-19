@@ -16,25 +16,53 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         height = parent.height,
     })
 
-    contentView:AddTitle("Starting Age")
+ --   contentView:AddTitle("Starting Age")
 
-    local currentAge = contentView:AddComboBox({
+    local ageDropdown = contentView:AddCollapseButton("Starting Age", {
+        expanded = false,
+        resizeParent = false,
+        onToggle = function(self, expanded)
+
+        end,
+    })
+
+    local currentAge = ageDropdown:AddList({
         entries = {
             {label = "Fifth Age", id = 1},
-            {label = "Sixth Age - Sliske's Game", id = 2},
-            {label = "Sixth Age - Elder God Wars", id = 3},
+            {label = "Sliske's Game", id = 2},
+            {label = "Elder God Wars", id = 3},
             {label = "Age of Chaos", id = 4}
         },
         maxSelected = 1,
         selectedID = 1,
         onChange = function(list,id,selected)
-           -- setAge(id, selected)
+        -- setAge(id, selected)
         end,
     })
+    -- local currentAge = contentView:AddList({
+    --     entries = {
+    --         {label = "Fifth Age", id = 1},
+    --         {label = "Sixth Age - Sliske's Game", id = 2},
+    --         {label = "Sixth Age - Elder God Wars", id = 3},
+    --         {label = "Age of Chaos", id = 4}
+    --     },
+    --     maxSelected = 1,
+    --     selectedID = 1,
+    --     onChange = function(list,id,selected)
+    --        -- setAge(id, selected)
+    --     end,
+    -- })
     
-    contentView:AddTitle("Difficulty")
+ --   contentView:AddTitle("Difficulty")
 
-    local difficulty = contentView:AddComboBox({
+    local difficultyDropdown = contentView:AddCollapseButton("Difficulty", {
+        expanded = false,
+        resizeParent = false,
+        onToggle = function(self, expanded)
+
+        end,
+    })
+    local difficulty = difficultyDropdown:AddList({
         entries = {
             {label = "Off", id = 0},
             {label = "Novice", id = 1},
@@ -46,9 +74,24 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         maxSelected = 1,
         selectedID = 1,
         onChange = function(list,id,selected)
-           -- setDifficulty(id, selected)
+        -- setDifficulty(id, selected)
         end,
     })
+    -- local difficulty = contentView:AddList({
+    --     entries = {
+    --         {label = "Off", id = 0},
+    --         {label = "Novice", id = 1},
+    --         {label = "Intermediate", id = 2},
+    --         {label = "Experienced", id = 3},
+    --         {label = "Master", id = 4},
+    --         {label = "Grandmaster", id = 5}
+    --     },
+    --     maxSelected = 1,
+    --     selectedID = 1,
+    --     onChange = function(list,id,selected)
+    --        -- setDifficulty(id, selected)
+    --     end,
+    -- })
 
     local features = contentView:AddCheckboxButton({
         { text = "Require boss kills", value = "bosses"},
