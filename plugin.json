@@ -1,0 +1,10 @@
+{
+    "name": "Agelocked",
+    "version": "0.0.1",
+    "contactEmailAddress": "tenderi4@hotmail.com",
+    "requiredDependencies": {
+    "prettyui": 6398181
+    },
+    "hasSettingsIcon": false,
+    "hasRibbonIcon": true
+}
