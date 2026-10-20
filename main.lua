@@ -1,11 +1,29 @@
---print("Starting Agelocked...")
 
--- Code section 1
--- Attach plugins to the game window
-game_window = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
 
+local ageIndex = 1
+local difficultyIndex = 0
+local age = "Age: "
+local difficulty = "Difficulty: "
+local ageText
+local difficultyText
+local currentAgeUI
+local difficultyUI
 
 local contentView
+
+
+
+
+
+if PersistentDB:CheckExists("startingAge") then
+    ageIndex = PersistentDB:GetInt("startingAge")
+end
+
+
+if PersistentDB:CheckExists("difficulty") then
+    difficultyIndex = PersistentDB:GetInt("difficulty")
+end
+
 
 Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
     if contentView then contentView:Destroy() end
@@ -16,7 +34,13 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         height = parent.height,
     })
 
- --   contentView:AddTitle("Starting Age")
+    -- contentView:AddTitle("Age")
+    ageText = contentView:AddText(age)
+
+    difficultyText = contentView:AddText(difficulty)
+
+    
+    local title = contentView:AddTitle("Settings")
 
     local ageDropdown = contentView:AddCollapseButton("Starting Age", {
         expanded = false,
@@ -26,7 +50,7 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         end,
     })
 
-    local currentAge = ageDropdown:AddList({
+    currentAgeUI = ageDropdown:AddList({
         entries = {
             {label = "Fifth Age", id = 1},
             {label = "Sliske's Game", id = 2},
@@ -35,9 +59,7 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         },
         maxSelected = 1,
         selectedID = 1,
-        onChange = function(list,id,selected)
-        -- setAge(id, selected)
-        end,
+        onChange = UpdateStartingAge
     })
     -- local currentAge = contentView:AddList({
     --     entries = {
@@ -62,20 +84,18 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
 
         end,
     })
-    local difficulty = difficultyDropdown:AddList({
+    difficultyUI = difficultyDropdown:AddList({
         entries = {
-            {label = "Off", id = 0},
-            {label = "Novice", id = 1},
-            {label = "Intermediate", id = 2},
-            {label = "Experienced", id = 3},
-            {label = "Master", id = 4},
-            {label = "Grandmaster", id = 5}
+            {label = "Off", id = 1},
+            {label = "Novice", id = 2},
+            {label = "Intermediate", id = 3},
+            {label = "Experienced", id = 4},
+            {label = "Master", id = 5},
+            {label = "Grandmaster", id = 6}
         },
         maxSelected = 1,
         selectedID = 1,
-        onChange = function(list,id,selected)
-        -- setDifficulty(id, selected)
-        end,
+        onChange = UpdateDifficulty
     })
     -- local difficulty = contentView:AddList({
     --     entries = {
@@ -97,14 +117,29 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         { text = "Require boss kills", value = "bosses"},
         { text = "Require lorebooks", value = "lorebooks" },
     }, {
-        onChange = function(group, values, changedValue, selected)
-            --saveFeatures(values)
-        end,
-})
+        onChange = UpdateOptionals
+    })
 
 end)
 
+function UpdateStartingAge(control,id,selected,eventType)
+    print("Age changed. Label: "..tostring(currentAgeUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
+    ageIndex = id
+    PersistentDB:SetInt("startingAge",ageIndex)
+end
+function UpdateDifficulty(control,id,selected,eventType)
+    print("Difficulty changed. Label: "..tostring(difficultyUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
+    difficultyIndex = id
+    PersistentDB:SetInt("difficulty",difficultyIndex)
+end
+function UpdateOptionals(group, values, changedValue, selected)
+
+end
+
+
 function PluginShutdown()
+    PersistentDB:SetInt("startingAge",ageIndex)
+    PersistentDB:SetInt("difficulty",difficultyIndex)
     Event.ContentLayerReady.Unsubscribe("my-plugin-content")
     if contentView then
         contentView:Destroy()
