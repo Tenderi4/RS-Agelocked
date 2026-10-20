@@ -1,9 +1,11 @@
 
 
 local ageIndex = 1
-local difficultyIndex = 0
-local age = "Age: "
-local difficulty = "Difficulty: "
+local difficultyIndex = 1
+local enableBossKills = false
+local enableLorebooks = false
+local age = "Age: Fifth Age"
+local difficulty = "Difficulty: Off"
 local ageText
 local difficultyText
 local currentAgeUI
@@ -11,18 +13,24 @@ local difficultyUI
 
 local contentView
 
+local Ages = {
+    {label = "Fifth Age", id = 1},
+    {label = "Sliske's Game", id = 2},
+    {label = "Elder God Wars", id = 3},
+    {label = "Age of Chaos", id = 4}
+}
 
+local Difficulties = {
+    {label = "Off", id = 1},
+    {label = "Novice", id = 2},
+    {label = "Intermediate", id = 3},
+    {label = "Experienced", id = 4},
+    {label = "Master", id = 5},
+    {label = "Grandmaster", id = 6}
+}
 
+local Optionals = 
 
-
-if PersistentDB:CheckExists("startingAge") then
-    ageIndex = PersistentDB:GetInt("startingAge")
-end
-
-
-if PersistentDB:CheckExists("difficulty") then
-    difficultyIndex = PersistentDB:GetInt("difficulty")
-end
 
 
 Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
@@ -34,12 +42,32 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         height = parent.height,
     })
 
+
+
+    if PersistentDB:CheckExists("startingAge") then
+        ageIndex = PersistentDB:GetInt("startingAge")
+        age = "Age: "..Ages[ageIndex].label
+    end
+
+
+    if PersistentDB:CheckExists("difficulty") then
+        difficultyIndex = PersistentDB:GetInt("difficulty")
+        difficulty = "Difficulty: "..Difficulties[difficultyIndex].label
+    end
+    
+    if PersistentDB:CheckExists("enableBossKills") then
+        enableBossKills = PersistentDB:Get("enableBossKills")
+    end
+
+    if PersistentDB:CheckExists("enableLorebooks") then
+        enableLorebooks = PersistentDB:Get("enableLorebooks")
+    end
+
     -- contentView:AddTitle("Age")
     ageText = contentView:AddText(age)
 
     difficultyText = contentView:AddText(difficulty)
 
-    
     local title = contentView:AddTitle("Settings")
 
     local ageDropdown = contentView:AddCollapseButton("Starting Age", {
@@ -51,12 +79,7 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
     })
 
     currentAgeUI = ageDropdown:AddList({
-        entries = {
-            {label = "Fifth Age", id = 1},
-            {label = "Sliske's Game", id = 2},
-            {label = "Elder God Wars", id = 3},
-            {label = "Age of Chaos", id = 4}
-        },
+        entries = Ages,
         maxSelected = 1,
         selectedID = 1,
         onChange = UpdateStartingAge
@@ -85,14 +108,7 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
         end,
     })
     difficultyUI = difficultyDropdown:AddList({
-        entries = {
-            {label = "Off", id = 1},
-            {label = "Novice", id = 2},
-            {label = "Intermediate", id = 3},
-            {label = "Experienced", id = 4},
-            {label = "Master", id = 5},
-            {label = "Grandmaster", id = 6}
-        },
+        entries = Difficulties,
         maxSelected = 1,
         selectedID = 1,
         onChange = UpdateDifficulty
@@ -114,27 +130,38 @@ Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
     -- })
 
     local features = contentView:AddCheckboxButton({
-        { text = "Require boss kills", value = "bosses"},
-        { text = "Require lorebooks", value = "lorebooks" },
+        { text = "Require boss kills", value = "bosses", selected = enableBossKills},
+        { text = "Require lorebooks", value = "lorebooks", selected = enableLorebooks },
     }, {
-        onChange = UpdateOptionals
+        onChange = function(group, values, changedValue, selected)
+            --print(tostring(group).." "..tostring(values).." "..tostring(changedValue).." "..tostring(selected))
+            if changedValue == "bosses" then
+                enableBossKills = selected
+                PersistentDB:Set("enableBossKills",selected)
+            elseif changedValue == "lorebooks" then
+                enableLorebooks = selected
+                PersistentDB:Set("enableLorebooks",selected)    
+            end
+            
+        end,
     })
 
 end)
 
 function UpdateStartingAge(control,id,selected,eventType)
-    print("Age changed. Label: "..tostring(currentAgeUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
+    --print("Age changed. Label: "..tostring(currentAgeUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
     ageIndex = id
+    ageText.content = "Age: "..Ages[id].label
     PersistentDB:SetInt("startingAge",ageIndex)
 end
 function UpdateDifficulty(control,id,selected,eventType)
-    print("Difficulty changed. Label: "..tostring(difficultyUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
+    --print("Difficulty changed. Label: "..tostring(difficultyUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
     difficultyIndex = id
+    difficultyText.content = "Difficulty: "..Difficulties[id].label
     PersistentDB:SetInt("difficulty",difficultyIndex)
 end
-function UpdateOptionals(group, values, changedValue, selected)
-
-end
+-- function UpdateOptionals(group, values, changedValue, selected)
+-- end
 
 
 function PluginShutdown()
@@ -146,52 +173,4 @@ function PluginShutdown()
         contentView = nil
     end
 end
-
-
-
-
-
-
-
--- Code section 2
--- Create a new group box for components
--- local myGroupBox = ui.GroupBox.new(game_window)
--- myGroupBox:SetHeaderLayout(250,20,0,0,0)
--- myGroupBox:SetSize(250,200)
--- myGroupBox:SetPos(50,250)
--- myGroupBox.headerText.content = "Agelocked Config"
--- --myGroupBox.headerText.font = 
--- myGroupBox.stylesheetID = id.StyleSheet.DEFAULT
-
--- -- Code section 3
--- -- Add some text
--- local myText = ui.Text.new(myGroupBox)
--- myText:SetSize(0,0,1.0,0.5)
--- myText:SetPos(0,0)
--- myText.content = "Hello world!"
--- myText.font = id.Font.MUSEO_SANS_15PT_REGULAR
--- myText:AlignTo(ui.AlignMode.CENTRE)
-
--- -- Code section 4
--- -- Add some colour
--- local myRectangle = ui.Rectangle.new(myGroupBox)
--- myRectangle:SetSize(0,0,1.0,0.5)
--- myRectangle:SetPos(0,0,0.0,0.5)
--- myRectangle.colour = Vector4.new(0.0, 1.0, 0.0, 1.0)
--- myRectangle.fill = true
-
--- -- Code section 4 version 2
--- -- Add a button
--- local myButton = ui.Button.new(myGroupBox)
--- myButton:SetPos(0,0,0.0,0.5)
--- myButton:SetSize(0,0,1.0,0.5)
--- myButton.label = "Push this button"
--- myButton.stylesheetID = id.StyleSheet.BUTTON_DEFAULT
-
--- Code section 5
--- Make the button do something
--- local function buttonPress()
---     myText.content = myText.content.."!"
--- end
--- myButton:Subscribe(ui.Hook.ONBUTTONPRESSED, buttonPress)
 
