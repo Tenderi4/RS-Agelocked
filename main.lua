@@ -13,11 +13,144 @@ local difficultyUI
 
 local contentView
 
-local Ages = {
-    {label = "Fifth Age", id = 1},
-    {label = "Sliske's Game", id = 2},
-    {label = "Elder God Wars", id = 3},
-    {label = "Age of Chaos", id = 4}
+local Ages = {{
+        label = "Fifth Age", 
+        id = 1
+    },
+    {
+        label = "Sliske's Game", 
+        id = 2,
+        npcs = {
+            -- Orlando Smith, the World Wakes starting point
+            "TSD_ORLANDO_OUTSIDE",
+            --Emissary NPCs
+            "GODEM_ARMADYL_EMISSARY",
+            "GODEM_BANDOS_EMISSARY",
+            "GODEM_SARADOMIN_EMISSARY",
+            "GODEM_SEREN_EMISSARY",
+            "GODEM_SLISKE_EMISSARY",
+            "GODEM_ZAMORAK_EMISSARY",
+            "GODEM_ZAROS_EMISSARY",
+            "GODEM_GODLESS_EMISSARY",
+            "GODEM_V_EMISSARY",
+	
+	    --World Event NPCs
+            "_6AWE3_QUARTERMASTER",
+            "_6AWE1_CUTSCENE_REPLAYER",
+            "_6AWE2_CUTSCENE_REPLAYER",
+            "TUSKA_CRASHSITE_SCOPULUS",
+            "TUSKA_ASTROMANCER_LUMBRIDGE_TELEPORT",
+            "TUSKA_CRASHSITE_GARLANDIA",
+            "TUSKA_CRASHSITE_KARA_MEIR",
+            "TUSKA_TUSKA_RAID_CUTSCENE_TUSKA",
+            "TUSKA_CRASHSITE_LRC2_SLISKE",
+	
+	
+        --Missing Presumed Death NPCs
+            "SLISKE1_SURVIVOR",
+            "SLISKE1_SURVIVOR_SCARED",
+            "SLISKE1_SURVIVOR_NORMAL",
+            "SLISKE1_SPIRIT_MONK_1",
+            "SLISKE1_SPIRIT_MONK_2",
+            "SLISKE1_SPIRIT_MONK_3",
+            "SLISKE1_SPIRIT_ELF_1",
+	
+        --GWD2 NPCs
+            "GWD2_MINIQUEST_CURATOR",
+            "GWD2_MINIQUEST_CURATOR_VIS",
+        },
+        interactions = {
+            -- Guthix's Cave
+
+            -- GWD2 Entrance
+
+        },
+        unlockedBy = {
+            {id = 2, achievements = {
+
+            }},
+            {id = 3, achievements = {
+
+            }},
+            {id = 4, achievements = {
+
+            }},
+            {id = 5, achievements = {
+
+            }},
+            {id = 6, achievements = {
+
+            }}
+        }
+        
+    },
+    {
+        label = "Elder God Wars", 
+        id = 3,
+        npcs = {
+            -- Burthorpe Council
+
+        },
+        interactions = {
+            -- The Needle
+
+            -- Senntisten entrance
+
+            -- Anachronia ship
+
+
+        },
+        unlockedBy = {
+            {id = 2, achievements = {
+
+            }},
+            {id = 3, achievements = {
+
+            }},
+            {id = 4, achievements = {
+
+            }},
+            {id = 5, achievements = {
+
+            }},
+            {id = 6, achievements = {
+                
+            }}
+        }
+    }, 
+    {
+        label = "Age of Chaos", 
+        id = 4,
+        npcs = {
+            -- Adrasteia
+
+        },
+        interactions = {
+            -- Necromancy entrance
+
+            -- New Foundations quest start
+
+            -- Daughter of Chaos quest start
+
+        },
+        unlockedBy = {
+            {id = 2, achievements = {
+
+            }},
+            {id = 3, achievements = {
+
+            }},
+            {id = 4, achievements = {
+
+            }},
+            {id = 5, achievements = {
+
+            }},
+            {id = 6, achievements = {
+                
+            }}
+        }
+    }
 }
 
 local Difficulties = {
@@ -29,11 +162,17 @@ local Difficulties = {
     {label = "Grandmaster", id = 6}
 }
 
-local Optionals = 
+local BlockedInteractions = {
+
+}
+
+local HiddenNPCs = {
+
+}
 
 
-
-Event.ContentLayerReady.Subscribe("my-plugin-content", function(event)
+-- CONFIG INTERFACE
+Event.ContentLayerReady.Subscribe("agelocked-interface", function(event)
     if contentView then contentView:Destroy() end
 
     local parent = event.component
@@ -163,11 +302,13 @@ end
 -- function UpdateOptionals(group, values, changedValue, selected)
 -- end
 
+-- INTERFACE END
+
 
 function PluginShutdown()
     PersistentDB:SetInt("startingAge",ageIndex)
     PersistentDB:SetInt("difficulty",difficultyIndex)
-    Event.ContentLayerReady.Unsubscribe("my-plugin-content")
+    Event.ContentLayerReady.Unsubscribe("agelocked-interface")
     if contentView then
         contentView:Destroy()
         contentView = nil
