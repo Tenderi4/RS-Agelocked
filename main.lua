@@ -58,12 +58,19 @@ local Ages = {{
         --GWD2 NPCs
             "GWD2_MINIQUEST_CURATOR",
             "GWD2_MINIQUEST_CURATOR_VIS",
+
+        -- Divination tutorial NPCS
+
+        -- Empty Throne Room
+            "FOTG2_DIGSITE_GUIDE",
         },
         interactions = {
             -- Guthix's Cave
-
+            "TSD_DIGSITE_DOORWAY_CLOSE",
             -- GWD2 Entrance
-
+            "GWD2_ENTANCE_GATE_BASE_EMPTY_CLICKZONE",
+            -- Empty Throne Room (related to Children of Mah, a Sliske's Game quest)
+            "FOTG2_DIGSITE_ENTRANCE"
         },
         unlockedBy = {
             {id = 2, achievements = {
@@ -85,19 +92,54 @@ local Ages = {{
         
     },
     {
-        label = "Elder God Wars", 
+        label = "Elder God Wars",
         id = 3,
         npcs = {
             -- Burthorpe Council
+            "QUEST_CHAROS_SEREN_SIMPLE",
+            "QUEST_CHAROS_SEREN_EXTRAVAGANT",
+            "QUEST_CHAROS_DORIC_VIS",
+            "QUEST_CHAROS_PHAROAH_OSMAN_VIS",
+            "QUEST_CHAROS_CYLCOPS_KHAN_VIS",
+            "QUEST_CHAROS_GARLANDIA_VIS",
+            "QUEST_CHAROS_ZILYANNA_VIS",
+            "QUEST_CHAROS_MOIA_VIS",
+            "QUEST_CHAROS_AZZANADRA_VIS",
+            "QUEST_CHAROS_ZANIK_VIS",
+            "QUEST_CHAROS_ICTHLARIN_VIS",
+            "QUEST_CHAROS_ZARADOR_VIS",
+            "QUEST_CHAROS_GLOUPHRIE_REP_VIS",
+            "QUEST_CHAROS_NARODE_VIS",
+            "QUEST_CHAROS_VANESCULA_VIS",
+            "QUEST_CHAROS_ONEIROMANCER_VIS",
+            "QUEST_CHAROS_RANCOUR_VIS",
+            "QUEST_CHAROS_JUNA_VIS",
+            "QUEST_CHAROS_KING_ROALD_VIS",
+            "QUEST_CHAROS_SIR_AMIK_VIS",
+            "QUEST_CHAROS_LORD_DAQUARIUS_VIS",
+            "QUEST_CHAROS_ARMADYL_VIS",
+            "QUEST_CHAROS_BRUNDT_VIS",
+            "QUEST_CHAROS_THOK",
+            -- Anachronia ship NPCs
+            "DINO_ONBOARDING_LANIAKEA",
+            "DINO_ONBOARDING_VARROCK_GUARD",
+            "DINO_ONBOARDING_ARCHAEOLOGIST",
+            -- Arch Guild NPCs
+            "ARCH_GUILDMASTER_REINIGER_TUTORIAL",
+            "ARCH_KHARIDET_MANAGER",
+            "ARCH_EVERLIGHT_MANAGER",
+            "ARCH_INFERNALSOURCE_MANAGER",
+            "ARCH_STORMGUARD_MANAGER",
+            "ARCH_WARFORGE_MANAGER",
 
         },
         interactions = {
             -- The Needle
-
+            "TNS_NEEDLE_VIS",
             -- Senntisten entrance
-
+            "EGWD_SURFACE_ENTRANCE_DOOR",
             -- Anachronia ship
-
+            "HUMAN_VEHICLE_BARGE_REGULAR_V4"
 
         },
         unlockedBy = {
@@ -123,13 +165,13 @@ local Ages = {{
         id = 4,
         npcs = {
             -- Adrasteia
-
+            "ADRASTEIA_BASILISSA",
         },
         interactions = {
             -- Necromancy entrance
-
+            "UNDERWORLD_ENTRANCE_LOUD",
             -- New Foundations quest start
-
+            "QUEST_FORT_INTRO_START_LOC"
             -- Daughter of Chaos quest start
 
         },
