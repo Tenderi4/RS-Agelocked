@@ -1,199 +1,27 @@
+local data = require("data")
 
-
-local ageIndex = 1
+local currentAgeIndex = 1
+local startingAgeIndex = 1
 local difficultyIndex = 1
+
 local enableBossKills = false
 local enableLorebooks = false
+
 local age = "Age: Fifth Age"
 local difficulty = "Difficulty: Off"
+
 local ageText
 local difficultyText
+
 local currentAgeUI
 local difficultyUI
 
+local DRAW_EVENT_NAME = "agelocked-hide-npcs"
+
 local contentView
 
-local Ages = {{
-        label = "Fifth Age", 
-        id = 1
-    },
-    {
-        label = "Sliske's Game", 
-        id = 2,
-        npcs = {
-            -- Orlando Smith, the World Wakes starting point
-            "TSD_ORLANDO_OUTSIDE",
-            --Emissary NPCs
-            "GODEM_ARMADYL_EMISSARY",
-            "GODEM_BANDOS_EMISSARY",
-            "GODEM_SARADOMIN_EMISSARY",
-            "GODEM_SEREN_EMISSARY",
-            "GODEM_SLISKE_EMISSARY",
-            "GODEM_ZAMORAK_EMISSARY",
-            "GODEM_ZAROS_EMISSARY",
-            "GODEM_GODLESS_EMISSARY",
-            "GODEM_V_EMISSARY",
-	
-	    --World Event NPCs
-            "_6AWE3_QUARTERMASTER",
-            "_6AWE1_CUTSCENE_REPLAYER",
-            "_6AWE2_CUTSCENE_REPLAYER",
-            "TUSKA_CRASHSITE_SCOPULUS",
-            "TUSKA_ASTROMANCER_LUMBRIDGE_TELEPORT",
-            "TUSKA_CRASHSITE_GARLANDIA",
-            "TUSKA_CRASHSITE_KARA_MEIR",
-            "TUSKA_TUSKA_RAID_CUTSCENE_TUSKA",
-            "TUSKA_CRASHSITE_LRC2_SLISKE",
-	
-	
-        --Missing Presumed Death NPCs
-            "SLISKE1_SURVIVOR",
-            "SLISKE1_SURVIVOR_SCARED",
-            "SLISKE1_SURVIVOR_NORMAL",
-            "SLISKE1_SPIRIT_MONK_1",
-            "SLISKE1_SPIRIT_MONK_2",
-            "SLISKE1_SPIRIT_MONK_3",
-            "SLISKE1_SPIRIT_ELF_1",
-	
-        --GWD2 NPCs
-            "GWD2_MINIQUEST_CURATOR",
-            "GWD2_MINIQUEST_CURATOR_VIS",
-
-        -- Divination tutorial NPCS
-
-        -- Empty Throne Room
-            "FOTG2_DIGSITE_GUIDE",
-        },
-        interactions = {
-            -- Guthix's Cave
-            "TSD_DIGSITE_DOORWAY_CLOSE",
-            -- GWD2 Entrance
-            "GWD2_ENTANCE_GATE_BASE_EMPTY_CLICKZONE",
-            -- Empty Throne Room (related to Children of Mah, a Sliske's Game quest)
-            "FOTG2_DIGSITE_ENTRANCE"
-        },
-        unlockedBy = {
-            {id = 2, achievements = {
-
-            }},
-            {id = 3, achievements = {
-
-            }},
-            {id = 4, achievements = {
-
-            }},
-            {id = 5, achievements = {
-
-            }},
-            {id = 6, achievements = {
-
-            }}
-        }
-        
-    },
-    {
-        label = "Elder God Wars",
-        id = 3,
-        npcs = {
-            -- Burthorpe Council
-            "QUEST_CHAROS_SEREN_SIMPLE",
-            "QUEST_CHAROS_SEREN_EXTRAVAGANT",
-            "QUEST_CHAROS_DORIC_VIS",
-            "QUEST_CHAROS_PHAROAH_OSMAN_VIS",
-            "QUEST_CHAROS_CYLCOPS_KHAN_VIS",
-            "QUEST_CHAROS_GARLANDIA_VIS",
-            "QUEST_CHAROS_ZILYANNA_VIS",
-            "QUEST_CHAROS_MOIA_VIS",
-            "QUEST_CHAROS_AZZANADRA_VIS",
-            "QUEST_CHAROS_ZANIK_VIS",
-            "QUEST_CHAROS_ICTHLARIN_VIS",
-            "QUEST_CHAROS_ZARADOR_VIS",
-            "QUEST_CHAROS_GLOUPHRIE_REP_VIS",
-            "QUEST_CHAROS_NARODE_VIS",
-            "QUEST_CHAROS_VANESCULA_VIS",
-            "QUEST_CHAROS_ONEIROMANCER_VIS",
-            "QUEST_CHAROS_RANCOUR_VIS",
-            "QUEST_CHAROS_JUNA_VIS",
-            "QUEST_CHAROS_KING_ROALD_VIS",
-            "QUEST_CHAROS_SIR_AMIK_VIS",
-            "QUEST_CHAROS_LORD_DAQUARIUS_VIS",
-            "QUEST_CHAROS_ARMADYL_VIS",
-            "QUEST_CHAROS_BRUNDT_VIS",
-            "QUEST_CHAROS_THOK",
-            -- Anachronia ship NPCs
-            "DINO_ONBOARDING_LANIAKEA",
-            "DINO_ONBOARDING_VARROCK_GUARD",
-            "DINO_ONBOARDING_ARCHAEOLOGIST",
-            -- Arch Guild NPCs
-            "ARCH_GUILDMASTER_REINIGER_TUTORIAL",
-            "ARCH_KHARIDET_MANAGER",
-            "ARCH_EVERLIGHT_MANAGER",
-            "ARCH_INFERNALSOURCE_MANAGER",
-            "ARCH_STORMGUARD_MANAGER",
-            "ARCH_WARFORGE_MANAGER",
-
-        },
-        interactions = {
-            -- The Needle
-            "TNS_NEEDLE_VIS",
-            -- Senntisten entrance
-            "EGWD_SURFACE_ENTRANCE_DOOR",
-            -- Anachronia ship
-            "HUMAN_VEHICLE_BARGE_REGULAR_V4"
-
-        },
-        unlockedBy = {
-            {id = 2, achievements = {
-
-            }},
-            {id = 3, achievements = {
-
-            }},
-            {id = 4, achievements = {
-
-            }},
-            {id = 5, achievements = {
-
-            }},
-            {id = 6, achievements = {
-                
-            }}
-        }
-    }, 
-    {
-        label = "Age of Chaos", 
-        id = 4,
-        npcs = {
-            -- Adrasteia
-            "ADRASTEIA_BASILISSA",
-        },
-        interactions = {
-            -- Necromancy entrance
-            "UNDERWORLD_ENTRANCE_LOUD",
-            -- New Foundations quest start
-            "QUEST_FORT_INTRO_START_LOC"
-            -- Daughter of Chaos quest start
-
-        },
-        unlockedBy = {
-            {id = 2, achievements = {
-
-            }},
-            {id = 3, achievements = {
-
-            }},
-            {id = 4, achievements = {
-
-            }},
-            {id = 5, achievements = {
-
-            }},
-            {id = 6, achievements = {
-                
-            }}
-        }
-    }
-}
+local Ages = data.Ages
+local visibleAges = {}
 
 local Difficulties = {
     {label = "Off", id = 1},
@@ -223,11 +51,11 @@ Event.ContentLayerReady.Subscribe("agelocked-interface", function(event)
         height = parent.height,
     })
 
-
+    UpdateVisibleAges(Ages,visibleAges)
 
     if PersistentDB:CheckExists("startingAge") then
-        ageIndex = PersistentDB:GetInt("startingAge")
-        age = "Age: "..Ages[ageIndex].label
+        startingAgeIndex = PersistentDB:GetInt("startingAge")
+        age = "Age: "..visibleAges[startingAgeIndex].label
     end
 
 
@@ -258,9 +86,9 @@ Event.ContentLayerReady.Subscribe("agelocked-interface", function(event)
 
         end,
     })
-
+    
     currentAgeUI = ageDropdown:AddList({
-        entries = Ages,
+        entries = visibleAges,
         maxSelected = 1,
         selectedID = 1,
         onChange = UpdateStartingAge
@@ -329,11 +157,21 @@ Event.ContentLayerReady.Subscribe("agelocked-interface", function(event)
 
 end)
 
+function UpdateVisibleAges(base,visible)
+    visible = {}
+    for i = 1,#base,1
+    do
+        if base[i].hidden == false then
+            table.insert(visible,base[i])
+        end
+    end
+end
+
 function UpdateStartingAge(control,id,selected,eventType)
     --print("Age changed. Label: "..tostring(currentAgeUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
-    ageIndex = id
+    startingAgeIndex = id
     ageText.content = "Age: "..Ages[id].label
-    PersistentDB:SetInt("startingAge",ageIndex)
+    PersistentDB:SetInt("startingAge",startingAgeIndex)
 end
 function UpdateDifficulty(control,id,selected,eventType)
     --print("Difficulty changed. Label: "..tostring(difficultyUI)..", ID: "..tostring(id)..", Selected: "..tostring(selected)..", eventType: "..tostring(eventType))
@@ -348,7 +186,7 @@ end
 
 
 function PluginShutdown()
-    PersistentDB:SetInt("startingAge",ageIndex)
+    PersistentDB:SetInt("startingAge",startingAgeIndex)
     PersistentDB:SetInt("difficulty",difficultyIndex)
     Event.ContentLayerReady.Unsubscribe("agelocked-interface")
     if contentView then

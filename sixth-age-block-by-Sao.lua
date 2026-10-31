@@ -216,56 +216,56 @@ end
 -- ===========================================================================
 
 -- The window is kept here so it can be removed when the plugin is turned off.
--- local window = nil
+local window = nil
 
--- local function buildUI()
---     -- Plugin windows are attached to a layer the game provides for plugins.
---     local gameWindow = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
+local function buildUI()
+    -- Plugin windows are attached to a layer the game provides for plugins.
+    local gameWindow = ui.Interfaces:GetComponent(id.Component.TOPLEVEL_V2__PLUGIN_BUILD_LAYER_TOP)
 
---     -- The window itself: a group box with its header removed.
---     window = ui.GroupBox.new(gameWindow)
---     window:SetHeaderLayout(0, 0, 0, 0, 0)
---     window:SetSize(400, 170)          -- width, height. Make larger if labels are cut off.
---     window:SetPos(20, 20)             -- distance from the top-left of the game window
---     window.stylesheetID = id.StyleSheet.GROUPBOX_DEFAULT
+    -- The window itself: a group box with its header removed.
+    window = ui.GroupBox.new(gameWindow)
+    window:SetHeaderLayout(0, 0, 0, 0, 0)
+    window:SetSize(400, 170)          -- width, height. Make larger if labels are cut off.
+    window:SetPos(20, 20)             -- distance from the top-left of the game window
+    window.stylesheetID = id.StyleSheet.GROUPBOX_DEFAULT
 
---     -- The window is split into 4 equal rows: a title, then one row per checkbox.
---     local ROW_HEIGHT = 0.25
+    -- The window is split into 4 equal rows: a title, then one row per checkbox.
+    local ROW_HEIGHT = 0.25
 
---     local title = ui.Text.new(window)
---     title:SetSize(0, 0, 1.0, ROW_HEIGHT)
---     title:SetPos(0, 0)
---     title.content = PLUGIN_TITLE
---     title.font = id.Font.MUSEO_SANS_15PT_REGULAR
---     title:AlignTo(ui.AlignMode.CENTRE)
+    local title = ui.Text.new(window)
+    title:SetSize(0, 0, 1.0, ROW_HEIGHT)
+    title:SetPos(0, 0)
+    title.content = PLUGIN_TITLE
+    title.font = id.Font.MUSEO_SANS_15PT_REGULAR
+    title:AlignTo(ui.AlignMode.CENTRE)
 
---     for index, group in ipairs(HIDE_GROUPS) do
---         local check = ui.Check.new(window)
---         check:SetSize(0, 0, 1.0, ROW_HEIGHT)
---         check:SetPos(0, 0, 0.0, ROW_HEIGHT * index)
---         check.stylesheetID = id.StyleSheet.CHECKBOX_DEFAULT
---         check.label = group.label
+    for index, group in ipairs(HIDE_GROUPS) do
+        local check = ui.Check.new(window)
+        check:SetSize(0, 0, 1.0, ROW_HEIGHT)
+        check:SetPos(0, 0, 0.0, ROW_HEIGHT * index)
+        check.stylesheetID = id.StyleSheet.CHECKBOX_DEFAULT
+        check.label = group.label
 
---         -- Restore the choice saved last time. (Setting a checkbox from code is
---         -- not described in the documentation, so this is guarded: if it does
---         -- not work, the box stays unticked and nothing is hidden, keeping the
---         -- box and the behaviour in agreement.)
---         if PersistentDB:GetBool("hide_" .. group.key) == true then
---             pcall(function() check.value = true end)
---             if check.value == true then
---                 setGroupEnabled(group, true)
---             else
---                 print("[QuestsTimeline] Could not restore the tick for: " .. group.label)
---             end
---         end
+        -- Restore the choice saved last time. (Setting a checkbox from code is
+        -- not described in the documentation, so this is guarded: if it does
+        -- not work, the box stays unticked and nothing is hidden, keeping the
+        -- box and the behaviour in agreement.)
+        if PersistentDB:GetBool("hide_" .. group.key) == true then
+            pcall(function() check.value = true end)
+            if check.value == true then
+                setGroupEnabled(group, true)
+            else
+                print("[QuestsTimeline] Could not restore the tick for: " .. group.label)
+            end
+        end
 
---         -- Runs each time the player clicks this checkbox.
---         -- "ticked" is true if the box is now ticked.
---         check:Subscribe(ui.Hook.ONBUTTONPRESSED, "toggle", function(clickedCheck, ticked)
---             setGroupEnabled(group, ticked)
---         end)
---     end
--- end
+        -- Runs each time the player clicks this checkbox.
+        -- "ticked" is true if the box is now ticked.
+        check:Subscribe(ui.Hook.ONBUTTONPRESSED, "toggle", function(clickedCheck, ticked)
+            setGroupEnabled(group, ticked)
+        end)
+    end
+end
 
 
 -- ===========================================================================
